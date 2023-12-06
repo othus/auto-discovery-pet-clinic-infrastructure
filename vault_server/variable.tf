@@ -2,14 +2,15 @@ variable "profilename" {}
 
 variable "aws-region" {}
 
-variable "var.vault-ami" {
-  
+variable "path-to-key-file" {}
+
+variable "vault-ami" {}
+
+variable "instance_type" {}
+
+variable "vault-kms-key" {
 }
 
-variable "vault-ami" {
-  
-}
+variable "domain-name" {}
 
-variable "instance_type" {
-  
-}
+variable "email" {}
