@@ -2,3 +2,7 @@
 output "Vault_IP" {
   value = aws_instance.vault-server.private_ip
 }
+
+output "Vault_DNS" {
+  value = aws_instance.vault-server.public_dns
+}

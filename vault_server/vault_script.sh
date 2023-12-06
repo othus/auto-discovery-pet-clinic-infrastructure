@@ -47,8 +47,8 @@ storage "consul" {
 listener "tcp" {
     adress = "0.0.0.0:443"
     tls_disable = 0
-    tls_cert_file = "/etc/letsencrypt/live/${var3}/fullchain.pem
-    tls_key_file = "/etc/letsencrypt/live/${var3}/privkey.pem
+    tls_cert_file = "/etc/letsencrypt/live/${var3}/fullchain.pem"
+    tls_key_file = "/etc/letsencrypt/live/${var3}/privkey.pem"
 }
 seal "awskms" {
     region = "${var1}"
