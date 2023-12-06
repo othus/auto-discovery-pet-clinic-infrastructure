@@ -1,3 +1,15 @@
 variable "profilename" {}
 
 variable "aws-region" {}
+
+variable "var.vault-ami" {
+  
+}
+
+variable "vault-ami" {
+  
+}
+
+variable "instance_type" {
+  
+}
