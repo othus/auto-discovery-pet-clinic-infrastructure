@@ -13,3 +13,7 @@ variable "vault-ami" {
 variable "instance_type" {
   
 }
+
+variable "domain-name" {
+  
+}

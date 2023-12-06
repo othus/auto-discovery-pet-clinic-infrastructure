@@ -74,9 +74,30 @@ resource "aws_instance" "vault-server" {
     var2 = var.aws_kms_key.vault.id,
     var3 = var.domain-name,
     var4 = var.email
-  }
-  )
+  })
+
   tags = {
     "Name" = vault-server
   }
+}
+
+resource "aws_kms_key" "vault-kms-key" {
+  description = "vault unseal kms key"
+  deletion_window_in_days = 10
+  tags = {
+    "Name" = "vault-kms-unseal-key"
+  }
+}
+
+data "aws_route53_zone" "vault-rout53-zone" {
+  name = var.domain-name
+  private_zone = false
+}
+
+resource "aws_route53_record" "vault-rout53-record" {
+  zone_id = data.aws_route53_zone.vault-rout53-zone.id
+  name = var.domain-name
+  type = "A"
+  records = [ aws_instance.vault-server.public_ip ]
+  ttl = 300
 }
