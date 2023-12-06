@@ -1,11 +1,15 @@
-profilename = raroaccess
+profilename = "raroaccess"
 
-aws-region = us-east-1
+aws-region = "us-east-1"
 
-vault-ami = ami-0fc5d935ebf8bc3bc
+path-to-key-file ="~/keypairs/Pap_key"
 
-instance_type = t2.micro
+vault-ami = "ami-0fc5d935ebf8bc3bc"
 
-domain-name = ${aws_instance.vault-server.public_dns}
+instance_type = "t2-micro"
 
-email = raroetobro@gmail.com
+domain-name = aws_instance.vault-server.public_dns
+
+email = "raroetobro@gmail.com"
+
+vault-kms-key = aws_kms_key.vault-kms-key.id

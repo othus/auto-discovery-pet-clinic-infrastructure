@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
   statement {
     sid       = "VaultKMSUnseal"
     effect    = "Allow"
-    resources = [aws_kms_key.vault.arn]
+    resources = [aws_kms_key.vault-kms-key.arn]
     actions = [
       "kms:Encrypt",
       "kms:Decrypt",
@@ -24,18 +24,18 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
 
 }
 
-resource "aws_iam_role" "vault-kms-unseal" {
+resource "aws_iam_role" "vault-kms-unseal-role" {
   name               = "vault-kms-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy" "vault-kms-unseal" {
   name   = "vault-kms-unseal"
-  role   = aws_iam_role.vault-kms-unseal.id
-  policy = data.aws_iam_policy_document.vault-kms-role.json
+  role   = aws_iam_role.vault-kms-unseal-role.id
+  policy = data.aws_iam_policy_document.vault-kms-unseal.json
 }
 
 resource "aws_iam_instance_profile" "vault-kms-unseal" {
   name = "vault-kms-unseal"
-  role = aws_iam_role.vault-kms-unseal.name
+  role = aws_iam_role.vault-kms-unseal-role.name
 }
