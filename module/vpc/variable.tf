@@ -10,3 +10,10 @@ variable "prvt_sub_1" {}
 variable "prvt_sub_1_cidr" {}
 variable "prvt_sub_2_cidr" {}
 variable "prvt_sub_2" {}
+variable "IGW" {}
+variable "eip_name" {}
+variable "NAT" {}
+variable "all_cidr" {}
+variable "PubRT" {}
+variable "PrvtRT" {}
+

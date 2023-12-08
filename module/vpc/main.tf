@@ -55,27 +55,80 @@ resource "aws_subnet" "prvt_sub_2" {
 }
 
 # Creating Internet Gateway resource
-resource "aws_internet_gateway" "name" {
-  
+resource "aws_internet_gateway" "IGW" {
+  vpc_id = aws_vpc.project_vpc
+  tags = {
+    Name = var.IGW
+  }
 }
 
 # Creating NAT Gateway resource
+# Creating NAT Gateway association with Public subnet 1 resource
+resource "aws_nat_gateway" "NAT" {
+  allocation_id = aws_eip.nat_eip
+  subnet_id = aws_subnet.pub_sub_1
+  tags = {
+    "Name" = var.NAT
+  }
+}
 
 # Creating Elastic IP resource for NAT Gateway
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+  depends_on = [ aws_internet_gateway.IGW ]
+  tags = {
+    "Name" = var.eip_name
+  }
+}
 
-# Creating NAT Gateway association with Public subnet 1 resource
 
 # Creating Public Route Table resource
+resource "aws_route_table" "PubRT" {
+  vpc_id = aws_vpc.project_vpc.id
+  route {
+    cidr_block = var.all_cidr
+    gateway_id = aws_internet_gateway.IGW.id
+  }
+  tags = {
+    "Name" = var.PubRT
+  }
+}
 
 # Creating Private Route Table resource
+resource "aws_route_table" "PrvtRT" {
+  vpc_id = aws_vpc.project_vpc.id
+  route {
+    cidr_block = var.all_cidr
+    gateway_id = aws_nat_gateway.NAT.id
+  }
+  tags = {
+    "Name" = var.PrvtRT
+  }
+}
 
 # Creating Public Subnet 1 Route Table association resource
+resource "aws_route_table_association" "pub_sub_1_ass" {
+  route_table_id = aws_route_table.PubRT.id
+  subnet_id = aws_subnet.pub_sub_1.id
+}
 
 # Creating Public Subnet 2 Route Table association resource
+resource "aws_route_table_association" "pub_sub_2_ass" {
+  route_table_id = aws_route_table.PubRT.id
+  subnet_id = aws_subnet.pub_sub_2.id
+}
 
 # Creating Private Subnet 1 Route Table association resource
+resource "aws_route_table_association" "prvt_sub_1_ass" {
+  route_table_id = aws_route_table.PrvtRT.id
+  subnet_id = aws_subnet.pub_sub_2.id
+}
 
 # Creating Private Subnet 2 Route Table association resource
+resource "aws_route_table_association" "prvt_sub_2_ass" {
+  route_table_id = aws_route_table.PrvtRT.id
+  subnet_id = aws_subnet.pub_sub_2.id
+}
 
 # Security Group resources for Bastion, Jenkins, Docker, Ansible, Sonarqube, Nexsu EC2 Instance
 
