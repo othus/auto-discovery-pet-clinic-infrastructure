@@ -53,3 +53,43 @@ resource "aws_subnet" "prvt_sub_2" {
     Name = var.prvt_sub_2
   }
 }
+
+# Creating Internet Gateway resource
+
+# Creating NAT Gateway resource
+
+# Creating Elastic IP resource for NAT Gateway
+
+# Creating NAT Gateway association with Public subnet 1 resource
+
+# Creating Public Route Table resource
+
+# Creating Private Route Table resource
+
+# Creating Public Subnet 1 Route Table association resource
+
+# Creating Public Subnet 2 Route Table association resource
+
+# Creating Private Subnet 1 Route Table association resource
+
+# Creating Private Subnet 2 Route Table association resource
+
+# Security Group resources for Bastion, Jenkins, Docker, Ansible, Sonarqube, Nexsu EC2 Instance
+
+# Bastion & Ansible Security Group Resource
+
+# Nexsu Security Group Resource
+
+# Docker Security Group Resource
+
+# Jenkins Security Group Resource
+
+# Sonarqube Security Group Resource
+
+# RDS Security Group Resource
+
+# TLS RSA Public & Private key Resource
+
+# Local Private key File of the TLS key Resource
+
+# AWS Keypair Resource
