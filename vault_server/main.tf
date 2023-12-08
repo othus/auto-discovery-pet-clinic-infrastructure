@@ -48,7 +48,7 @@ resource "aws_security_group" "vault-SG" {
   }
 
   egress {
-    description = "egres ports (all ports opened)"
+    description = "ssh ports"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

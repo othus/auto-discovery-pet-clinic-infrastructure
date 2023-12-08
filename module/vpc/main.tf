@@ -133,16 +133,202 @@ resource "aws_route_table_association" "prvt_sub_2_ass" {
 # Security Group resources for Bastion, Jenkins, Docker, Ansible, Sonarqube, Nexsu EC2 Instance
 
 # Bastion & Ansible Security Group Resource
+resource "aws_security_group" "Bastion_Ansible_SG" {
+  name = var.Bastion_Ansible_SG
+  description = "Allow inbound SSH traffic"
+  vpc_id = aws_vpc.project_vpc.id
+
+  ingress = {
+    description = "ssh port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  egress {
+    description = "SSH ports"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.all_cidr]
+  }
+}
 
 # Nexsu Security Group Resource
+resource "aws_security_group" "Nexsu_SG" {
+  name = var.Nexsu_SG
+  description = "Allow inbound SSH traffic"
+  vpc_id = aws_vpc.project_vpc.id
+
+  ingress = {
+    description = "http proxy 1 port"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "http proxy 1 port"
+    from_port   = 8085
+    to_port     = 8085
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "ssh port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.all_cidr]
+  }
+  tags = {
+    "Name" = var.Nexsu_SG
+  }
+}
 
 # Docker Security Group Resource
+resource "aws_security_group" "Docker_SG" {
+  name = var.Docker_SG
+  description = "Allow inbound traffic"
+  vpc_id = aws_vpc.project_vpc.id
+
+  ingress = {
+    description = "http port"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "http proxy port"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "SSH port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "https port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.all_cidr]
+  }
+  tags = {
+    "Name" = var.Docker_SG
+  }
+}
 
 # Jenkins Security Group Resource
+resource "aws_security_group" "Jenkins_SG" {
+  name = var.Jenkins_SG
+  description = "Allow inbound traffic"
+  vpc_id = aws_vpc.project_vpc.id
+
+  ingress = {
+    description = "http proxy port"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "http port"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "http proxy port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.all_cidr]
+  }
+  tags = {
+    "Name" = var.Jenkins_SG
+  }
+}
 
 # Sonarqube Security Group Resource
+resource "aws_security_group" "Sonarqube_SG" {
+  name = var.Sonarqube_SG
+  description = "Allow inbound traffic"
+  vpc_id = aws_vpc.project_vpc.id
+
+  ingress = {
+    description = "Sonarqube port"
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  ingress = {
+    description = "ssh port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.all_cidr]
+  }
+  tags = {
+    "Name" = var.Sonarqube_SG
+  }
+}
 
 # RDS Security Group Resource
+resource "aws_security_group" "RDS_SG" {
+  name = var.RDS_SG
+  description = "Allow inbound traffic"
+  vpc_id = aws_vpc.project_vpc.id
+
+  ingress = {
+    description = "mysql port"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = [var.all_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.all_cidr]
+  }
+  tags = {
+    "Name" = var.RDS_SG
+  }
+}
 
 # TLS RSA Public & Private key Resource
 

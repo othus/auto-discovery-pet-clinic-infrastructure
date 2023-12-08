@@ -16,4 +16,9 @@ variable "NAT" {}
 variable "all_cidr" {}
 variable "PubRT" {}
 variable "PrvtRT" {}
-
+variable "Bastion_Ansible_SG" {}
+variable "Nexsu_SG" {}
+variable "Docker_SG" {}
+variable "Jenkins_SG" {}
+variable "Sonarqube_SG" {}
+variable "RDS_SG" {}
