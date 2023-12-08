@@ -55,6 +55,9 @@ resource "aws_subnet" "prvt_sub_2" {
 }
 
 # Creating Internet Gateway resource
+resource "aws_internet_gateway" "name" {
+  
+}
 
 # Creating NAT Gateway resource
 
