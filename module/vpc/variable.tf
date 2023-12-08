@@ -22,3 +22,4 @@ variable "Docker_SG" {}
 variable "Jenkins_SG" {}
 variable "Sonarqube_SG" {}
 variable "RDS_SG" {}
+variable "keypair_name" {}

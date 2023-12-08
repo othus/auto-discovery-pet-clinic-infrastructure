@@ -331,7 +331,20 @@ resource "aws_security_group" "RDS_SG" {
 }
 
 # TLS RSA Public & Private key Resource
+resource "tls_private_key" "tlskey" {
+  algorithm = "RAS"
+  rsa_bits = "4096"
+}
 
 # Local Private key File of the TLS key Resource
+resource "local_file" "sshkey" {
+  content = tls_private_key.tlskey.private_key_pem
+  file_permission = "600"
+  filename = "tlskey.pem"
+}
 
 # AWS Keypair Resource
+resource "aws_key_pair" "project_key" {
+  key_name = var.keypair_name
+  public_key = tls_private_key.tlskey.public_key_openssh
+}
