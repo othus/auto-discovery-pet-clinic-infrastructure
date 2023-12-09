@@ -1,3 +1,6 @@
+vault_tlskey
+vault_tlskey.pem
+
 # Local .terraform directories
 **/.terraform/*
 

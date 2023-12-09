@@ -72,9 +72,9 @@ WantedBy=multi-user.target
 EOT
 
 sudo systemctl Daemon-reload
-export VAULT_ADDR=http://${var3}:443
+export VAULT_ADDR=http://${aws_instance.vault-server.public_ip5}:443
 cat << EOT > /etc/profile.d/vault.sh
-export VAULT_ADDR=http://${var3}:443
+export VAULT_ADDR=http://${aws_instance.vault-server.public_ip}:443
 export VAULT_SKIP_VERIFY=true
 EOT
 vault -autocomplete-install
