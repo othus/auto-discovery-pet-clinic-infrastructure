@@ -167,14 +167,14 @@ resource "aws_security_group" "Nexsu_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "http proxy 1 port"
     from_port   = 8085
     to_port     = 8085
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "ssh port"
     from_port   = 22
     to_port     = 22
@@ -198,28 +198,28 @@ resource "aws_security_group" "Docker_SG" {
   description = "Allow inbound traffic"
   vpc_id = aws_vpc.project_vpc.id
 
-  ingress = {
+  ingress  {
     description = "http port"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "http proxy port"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "SSH port"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "https port"
     from_port   = 443
     to_port     = 443
@@ -250,14 +250,14 @@ resource "aws_security_group" "Jenkins_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "http port"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "http proxy port"
     from_port   = 22
     to_port     = 22
@@ -288,7 +288,7 @@ resource "aws_security_group" "Sonarqube_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress = {
+  ingress  {
     description = "ssh port"
     from_port   = 22
     to_port     = 22

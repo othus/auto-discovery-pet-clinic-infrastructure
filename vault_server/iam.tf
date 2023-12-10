@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
     actions = [
       "kms:Encrypt",
       "kms:Decrypt",
-      "kms:Descriibekey",
+      "kms:Describekey",
     ]
   }
 

@@ -21,7 +21,7 @@ EOT
 sudo mkdir /etc/consul.d
 sudo cat <<EOT>> /etc/consul.d/ui.json
 {
-    "adresses":{
+    "addresses":{
         "http": "0.0.0.0"
     }
 }
@@ -41,11 +41,11 @@ sudo mv vault /usr/bin/
 sudo mkdir /etc/vault/
 sudo cat <<EOT>> /etc/vault/config.hcl
 storage "consul" {
-    adress = "127.0.0.1:8500"
+    address = "127.0.0.1:8500"
     path = "vault/"
 }
 listener "tcp" {
-    adress = "0.0.0.0:443"
+    address = "0.0.0.0:443"
     tls_disable = 0
     tls_cert_file = "/etc/letsencrypt/live/${var3}/fullchain.pem"
     tls_key_file = "/etc/letsencrypt/live/${var3}/privkey.pem"
@@ -71,7 +71,7 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOT
 
-sudo systemctl Daemon-reload
+sudo systemctl daemon-reload
 export VAULT_ADDR=http://${aws_instance.vault-server.public_ip5}:443
 cat << EOT > /etc/profile.d/vault.sh
 export VAULT_ADDR=http://${aws_instance.vault-server.public_ip}:443
