@@ -77,7 +77,7 @@ resource "aws_eip" "nat_eip" {
   domain = "vpc"
   depends_on = [ aws_internet_gateway.IGW ]
   tags = {
-    "Name" = var.eip_name
+    "Name" = var.eip
   }
 }
 
