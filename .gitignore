@@ -35,3 +35,5 @@ terraform.rc
 *.pem
 /test
 /test/*
+/.vscode/*
+/.vscode/settings.json
