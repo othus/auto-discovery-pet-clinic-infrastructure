@@ -1,24 +1,16 @@
-variable "domain_name" {
-  
-}
-variable "domain_name2" {
-  
-}
-variable "stage_dns_name" {
-  
-}
-variable "stage_zone_id" {
-  
-}
-variable "domain_name3" {
-  
-}
-variable "stage_dns_name2" {
-  
-}
-variable "stage_zone_id2" {
-  
-}
-variable "domain_name4" {
-  
-}
+variable "stage_lt_name" {}
+variable "instance_type" {}
+variable "lt_sg" {}
+variable "key_name" {}
+variable "nexus_ip" {}
+variable "newrelic_license_key" {}
+variable "acct_id" {}
+variable "ami_id" {}
+variable "stage_asg_name" {}
+variable "vpc_zone_identifier" {}
+variable "stage_tg_arn" {}
+variable "stage_asg_policy_type" {}
+variable "prod_lt_name" {}
+variable "prod_asg_name" {}
+variable "prod_tg_arn" {}
+variable "prod_asg_policy_type" {}
