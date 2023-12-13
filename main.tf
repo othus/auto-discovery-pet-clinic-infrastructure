@@ -25,9 +25,26 @@ module "vpc" {
   Jenkins_SG = "${var.projectname}_SG"
   Sonarqube_SG = "${var.projectname}_Sonarqube_SG"
   RDS_SG = "${var.projectname}_RDS_SG"
+  # Keypair
   keypair_name = "${var.projectname}_keypair"
-
 }
+
+# Route53
+module "route53" {
+  source = "./module/route53"
+  domain_name = var.domain_name
+  domain_name2 = var.domain_name2
+  domain_name3 = var.domain_name3
+  domain_name4 = var.domain_name4
+  stage_dns_name = module.env_lb.stage_dns_name
+  stage_zone_id = module.env_lb.stage_zone_id
+  # prod_dns_name = module.env_lb.prod_dns_name
+  # prod_zone_id = module.env_lb.prod_zone_id
+  stage_dns_name2 = module.env_lb.stage_dns_name2
+  stage_zone_id2 = module.env_lb.stage_zone_id2
+}
+
+
 
 # configure the data source to retrieve the database
 # username and password from vault
@@ -46,3 +63,73 @@ module "rds" {
   username = data.vault_generic_secret.my_db_secret.data["username"]
   password = data.vault_generic_secret.my_db_secret.data["password"]
 }  
+
+module "Jenkins" {
+  source = "./module/jenkins"
+  redhat_ami = var.ami_redhat
+  instance_type2 = var.instance_type2
+  jenkins_SG_id = [module.vpc.Jenkins_SG]
+  subnet_id = module.vpc.prvt_sub_1
+  keypair_name = module.vpc.keypair_name
+  nexus_ip = module.nexus.nexus_ip
+  jenkins_name = "${var.project_name}_jenkins"
+  newrelic_license_key = var.newrelic_license_key
+  acct_id = var.acct_id
+  subnet_id2 = [module.vpc.pub_sub_1]
+  elb_instance = module.jenkins.jenkins_server
+  elb_name = "${var.project_name}-jenkins-lb"
+  elb_sg = [module.vpc.Jenkins_SG]
+}
+
+module "sonarqube" {
+  source = "./module/sonarqube"
+  ubuntu_ami = var.ami_ubuntu
+  instance_type2 = var.instance_type2
+  subnet_id = module.vpc.pub_sub_2
+  sonarqube_name = "${var.project_name}_sonarqube"
+  Sonarqube_SG = module.vpc.Sonarqube_SG
+  keypair_name = module.vpc.keypair_name
+  newrelic_license_key = var.newrelic_license_key
+  acct_id = var.acct_id
+}
+
+module "nexus" {
+  source = "./module/nexus"
+  redhat_ami = var.ami_redhat
+  instance_type = var.instance_type2
+  subnet_id = module.vpc.pub_sub_2
+  Nexus_SG = module.vpc.Nexsu_SG
+  keypair_name = module.vpc.keypair_name
+  nexus_name = "${var.project_name}_nexus"
+  newrelic_license_key = var.newrelic_license_key
+  acct_id = var.acct_id
+}
+
+module "ansible" {
+  source = "./module/ansible"
+  ami_redhat = var.ami_redhat
+  ansible_name = "${var.project_name}_ansible_server"
+  keypair = module.vpc.private_key_pem
+  keypair_name = module.vpc.keypair_name
+  subnet_id = module.vpc.pub_sub_1
+  ansible_SG = module.vpc.ansible_SG
+  nexus_ip = module.nexus.nexus_ip
+  staging_discovery_script = "${path.root}/module/ansible/stage-env-bash-script.sh"
+  staging_playbook = "${path.root}/module/ansible/stage-env-playbook.ynl"
+  prod_discovery_script = "${path.root}/module/ansible/prod-env-bash-script.sh"
+  prod_playbook = "${path.root}/module/ansible/prod-env-playbook.ynl"
+  newrelic_license_key = var.newrelic_license_key
+  acct_id = var.acct_id
+}
+
+module "Bastion" {
+  source = "./module/bastion_host"
+  ami_redhat = var.ami_redhat
+  instance_type = t2.micro
+  privatekey = module.vpc.privatekey
+  pub_sub_1 = module.vpc.pub_sub_1
+  Bastion_Ansible_SG = module.vpc.Bastion_Ansible_SG
+  keypair_name = module.vpc.keypair_name
+  bastion_name = "${var.project_name}_bastion"
+}
+
