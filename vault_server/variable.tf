@@ -8,8 +8,6 @@ variable "vault-ami" {}
 
 variable "instance_type" {}
 
-# variable "vault-kms-key" {}
-
-# variable "domain-name" {}
+variable "domain-name" {}
 
 variable "email" {}

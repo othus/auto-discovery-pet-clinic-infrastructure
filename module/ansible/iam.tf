@@ -14,10 +14,9 @@ resource "aws_iam_group" "ansible_group" {
 }
 
 # Adding ansible user to ansible group
-resource "aws_iam_group_membership" "ansible_group_membership" {
+resource "aws_iam_user_group_membership" "ansible_group_membership" {
   user = aws_iam_user.ansible_user.name
-  group = aws_iam_group.ansible_group.name
-  name = "ansiblegroupmembership"
+  group = [aws_iam_group.ansible_group.name]
 }
 
 # Creating IAM Policy

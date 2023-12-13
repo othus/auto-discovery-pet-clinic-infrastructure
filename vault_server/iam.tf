@@ -2,9 +2,10 @@
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect  = "Allow"
-    actions = ["sts:AssumRole"]
+    actions = ["sts:AssumeRole"]
+
     principals {
-      type        = "service"
+      type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
   }
@@ -15,13 +16,13 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
     sid       = "VaultKMSUnseal"
     effect    = "Allow"
     resources = [aws_kms_key.vault.arn]
+
     actions = [
       "kms:Encrypt",
       "kms:Decrypt",
       "kms:Describekey",
     ]
   }
-
 }
 
 resource "aws_iam_role" "vault-kms-unseal" {
