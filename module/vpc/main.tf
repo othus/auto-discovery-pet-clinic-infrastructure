@@ -1,9 +1,9 @@
 #  Creating All Network Resources
 resource "aws_vpc" "project_vpc" {
-  cidr_block       = var.vpc_cidr_block #"10.0.0.0/16"
-  instance_tenancy = "default"
+  cidr_block           = var.vpc_cidr_block #"10.0.0.0/16"
+  instance_tenancy     = "default"
   enable_dns_hostnames = true
-  enable_dns_support = true
+  enable_dns_support   = true
 
   tags = {
     Name = var.vpc_name
@@ -12,8 +12,8 @@ resource "aws_vpc" "project_vpc" {
 
 # Public subnet 1 resource
 resource "aws_subnet" "pub_sub_1" {
-  vpc_id     = aws_vpc.project_vpc.id
-  cidr_block = var.pub_sub_1_cidr #"10.0.1.0/24"
+  vpc_id            = aws_vpc.project_vpc.id
+  cidr_block        = var.pub_sub_1_cidr #"10.0.1.0/24"
   availability_zone = var.az_1
 
   tags = {
@@ -23,8 +23,8 @@ resource "aws_subnet" "pub_sub_1" {
 
 # Public subnet 2 resource
 resource "aws_subnet" "pub_sub_2" {
-  vpc_id     = aws_vpc.project_vpc.id
-  cidr_block = var.pub_sub_2_cidr #"10.0.2.0/24"
+  vpc_id            = aws_vpc.project_vpc.id
+  cidr_block        = var.pub_sub_2_cidr #"10.0.2.0/24"
   availability_zone = var.az_2
 
   tags = {
@@ -34,8 +34,8 @@ resource "aws_subnet" "pub_sub_2" {
 
 # Private subnet 1 resource
 resource "aws_subnet" "prvt_sub_1" {
-  vpc_id     = aws_vpc.project_vpc.id
-  cidr_block = var.prvt_sub_1_cidr #"10.0.3.0/24"
+  vpc_id            = aws_vpc.project_vpc.id
+  cidr_block        = var.prvt_sub_1_cidr #"10.0.3.0/24"
   availability_zone = var.az_1
 
   tags = {
@@ -45,8 +45,8 @@ resource "aws_subnet" "prvt_sub_1" {
 
 # Private subnet 2 resource
 resource "aws_subnet" "prvt_sub_2" {
-  vpc_id     = aws_vpc.project_vpc.id
-  cidr_block = var.prvt_sub_2_cidr #"10.0.4.0/24"
+  vpc_id            = aws_vpc.project_vpc.id
+  cidr_block        = var.prvt_sub_2_cidr #"10.0.4.0/24"
   availability_zone = var.az_2
 
   tags = {
@@ -66,7 +66,7 @@ resource "aws_internet_gateway" "IGW" {
 # Creating NAT Gateway association with Public subnet 1 resource
 resource "aws_nat_gateway" "NAT" {
   allocation_id = aws_eip.nat_eip
-  subnet_id = aws_subnet.pub_sub_1
+  subnet_id     = aws_subnet.pub_sub_1
   tags = {
     "Name" = var.NAT
   }
@@ -74,8 +74,8 @@ resource "aws_nat_gateway" "NAT" {
 
 # Creating Elastic IP resource for NAT Gateway
 resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-  depends_on = [ aws_internet_gateway.IGW ]
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.IGW]
   tags = {
     "Name" = var.eip
   }
@@ -109,34 +109,34 @@ resource "aws_route_table" "PrvtRT" {
 # Creating Public Subnet 1 Route Table association resource
 resource "aws_route_table_association" "pub_sub_1_ass" {
   route_table_id = aws_route_table.PubRT.id
-  subnet_id = aws_subnet.pub_sub_1.id
+  subnet_id      = aws_subnet.pub_sub_1.id
 }
 
 # Creating Public Subnet 2 Route Table association resource
 resource "aws_route_table_association" "pub_sub_2_ass" {
   route_table_id = aws_route_table.PubRT.id
-  subnet_id = aws_subnet.pub_sub_2.id
+  subnet_id      = aws_subnet.pub_sub_2.id
 }
 
 # Creating Private Subnet 1 Route Table association resource
 resource "aws_route_table_association" "prvt_sub_1_ass" {
   route_table_id = aws_route_table.PrvtRT.id
-  subnet_id = aws_subnet.pub_sub_2.id
+  subnet_id      = aws_subnet.pub_sub_2.id
 }
 
 # Creating Private Subnet 2 Route Table association resource
 resource "aws_route_table_association" "prvt_sub_2_ass" {
   route_table_id = aws_route_table.PrvtRT.id
-  subnet_id = aws_subnet.pub_sub_2.id
+  subnet_id      = aws_subnet.pub_sub_2.id
 }
 
 # Security Group resources for Bastion, Jenkins, Docker, Ansible, Sonarqube, Nexsu EC2 Instance
 
 # Bastion & Ansible Security Group Resource
 resource "aws_security_group" "Bastion_Ansible_SG" {
-  name = var.Bastion_Ansible_SG
+  name        = var.Bastion_Ansible_SG
   description = "Allow inbound SSH traffic"
-  vpc_id = aws_vpc.project_vpc.id
+  vpc_id      = aws_vpc.project_vpc.id
 
   ingress = {
     description = "ssh port"
@@ -156,9 +156,9 @@ resource "aws_security_group" "Bastion_Ansible_SG" {
 
 # Nexsu Security Group Resource
 resource "aws_security_group" "Nexsu_SG" {
-  name = var.Nexsu_SG
+  name        = var.Nexsu_SG
   description = "Allow inbound SSH traffic"
-  vpc_id = aws_vpc.project_vpc.id
+  vpc_id      = aws_vpc.project_vpc.id
 
   ingress = {
     description = "http proxy 1 port"
@@ -167,14 +167,14 @@ resource "aws_security_group" "Nexsu_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "http proxy 1 port"
     from_port   = 8085
     to_port     = 8085
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "ssh port"
     from_port   = 22
     to_port     = 22
@@ -194,32 +194,32 @@ resource "aws_security_group" "Nexsu_SG" {
 
 # Docker Security Group Resource
 resource "aws_security_group" "Docker_SG" {
-  name = var.Docker_SG
+  name        = var.Docker_SG
   description = "Allow inbound traffic"
-  vpc_id = aws_vpc.project_vpc.id
+  vpc_id      = aws_vpc.project_vpc.id
 
-  ingress  {
+  ingress {
     description = "http port"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "http proxy port"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "SSH port"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "https port"
     from_port   = 443
     to_port     = 443
@@ -239,9 +239,9 @@ resource "aws_security_group" "Docker_SG" {
 
 # Jenkins Security Group Resource
 resource "aws_security_group" "Jenkins_SG" {
-  name = var.Jenkins_SG
+  name        = var.Jenkins_SG
   description = "Allow inbound traffic"
-  vpc_id = aws_vpc.project_vpc.id
+  vpc_id      = aws_vpc.project_vpc.id
 
   ingress = {
     description = "http proxy port"
@@ -250,14 +250,14 @@ resource "aws_security_group" "Jenkins_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "http port"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "http proxy port"
     from_port   = 22
     to_port     = 22
@@ -277,9 +277,9 @@ resource "aws_security_group" "Jenkins_SG" {
 
 # Sonarqube Security Group Resource
 resource "aws_security_group" "Sonarqube_SG" {
-  name = var.Sonarqube_SG
+  name        = var.Sonarqube_SG
   description = "Allow inbound traffic"
-  vpc_id = aws_vpc.project_vpc.id
+  vpc_id      = aws_vpc.project_vpc.id
 
   ingress = {
     description = "Sonarqube port"
@@ -288,7 +288,7 @@ resource "aws_security_group" "Sonarqube_SG" {
     protocol    = "tcp"
     cidr_blocks = [var.all_cidr]
   }
-  ingress  {
+  ingress {
     description = "ssh port"
     from_port   = 22
     to_port     = 22
@@ -308,9 +308,9 @@ resource "aws_security_group" "Sonarqube_SG" {
 
 # RDS Security Group Resource
 resource "aws_security_group" "RDS_SG" {
-  name = var.RDS_SG
+  name        = var.RDS_SG
   description = "Allow inbound traffic"
-  vpc_id = aws_vpc.project_vpc.id
+  vpc_id      = aws_vpc.project_vpc.id
 
   ingress = {
     description = "mysql port"
@@ -333,18 +333,18 @@ resource "aws_security_group" "RDS_SG" {
 # TLS RSA Public & Private key Resource
 resource "tls_private_key" "tlskey" {
   algorithm = "RAS"
-  rsa_bits = "4096"
+  rsa_bits  = "4096"
 }
 
 # Local Private key File of the TLS key Resource
 resource "local_file" "sshkey" {
-  content = tls_private_key.tlskey.private_key_pem
+  content         = tls_private_key.tlskey.private_key_pem
   file_permission = "600"
-  filename = "tlskey.pem"
+  filename        = "tlskey.pem"
 }
 
 # AWS Keypair Resource
 resource "aws_key_pair" "project_key" {
-  key_name = var.keypair_name
+  key_name   = var.keypair_name
   public_key = tls_private_key.tlskey.public_key_openssh
 }
