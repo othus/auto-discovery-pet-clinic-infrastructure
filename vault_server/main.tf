@@ -102,7 +102,7 @@ resource "aws_instance" "vault-server" {
 
 resource "aws_kms_key" "vault" {
   description             = "vault unseal kms key"
-  deletion_window_in_days = 3
+  deletion_window_in_days = 7
   tags = {
     "Name" = "vault-kms-unseal-key"
   }

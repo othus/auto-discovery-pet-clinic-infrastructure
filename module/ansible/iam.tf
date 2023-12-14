@@ -21,6 +21,6 @@ resource "aws_iam_user_group_membership" "ansible_group_membership" {
 
 # Creating IAM Policy
 resource "aws_iam_group_policy_attachment" "ansible_policy" {
-  policy_arn = "arn:aws:policy/AmazonEC2FullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
   group      = aws_iam_group.ansible_group.name
 }

@@ -13,12 +13,12 @@ variable "stage_zone_id" {
 variable "domain_name3" {
 
 }
-variable "stage_dns_name2" {
-
-}
-variable "stage_zone_id2" {
-
-}
 variable "domain_name4" {
 
+}
+variable "prod_dns_name2" {
+  
+}
+variable "prod_zone_id2" {
+  
 }

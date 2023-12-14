@@ -36,10 +36,10 @@ module "route53" {
   domain_name2    = var.domain_name2
   domain_name3    = var.domain_name3
   domain_name4    = var.domain_name4
-  stage_dns_name  = module.env_lb.stage_dns_name
+  stage_dns_name  = module.env_lb.stage_lb_dns
   stage_zone_id   = module.env_lb.stage_zone_id
-  stage_dns_name2 = module.env_lb.stage_dns_name2
-  stage_zone_id2  = module.env_lb.stage_zone_id2
+  prod_dns_name2 = module.env_lb.Prod_lb_dns
+  prod_zone_id2  = module.env_lb.Prod_zone_id
 }
 
 
@@ -74,7 +74,7 @@ module "Jenkins" {
   newrelic_license_key = var.newrelic_license_key
   acct_id              = var.acct_id
   subnet_id2           = [module.vpc.pub_sub_1]
-  elb_instance         = module.jenkins.jenkins_server
+  elb_instance         = module.Jenkins.instance
   elb_name             = "${var.project_name}-jenkins-lb"
   elb_sg               = [module.vpc.Jenkins_SG]
 }
@@ -107,10 +107,10 @@ module "ansible" {
   source                   = "./module/ansible"
   ami_redhat               = var.ami_redhat
   ansible_name             = "${var.project_name}_ansible_server"
-  keypair                  = module.vpc.private_key_pem
+  keypair                  = module.vpc.keypair
   keypair_name             = module.vpc.keypair_name
   subnet_id                = module.vpc.pub_sub_1
-  ansible_SG               = module.vpc.ansible_SG
+  ansible_SG               = module.vpc.Bastion_Ansible_SG
   nexus_ip                 = module.nexus.nexus_ip
   staging_discovery_script = "${path.root}/module/ansible/stage-env-bash-script.sh"
   staging_playbook         = "${path.root}/module/ansible/stage-env-playbook.ynl"
@@ -123,8 +123,8 @@ module "ansible" {
 module "Bastion" {
   source             = "./module/bastion_host"
   ami_redhat         = var.ami_redhat
-  instance_type      = t2.micro
-  privatekey         = module.vpc.privatekey
+  instance_type      = "t2.micro"
+  privatekey         = module.vpc.keypair_name
   pub_sub_1          = module.vpc.pub_sub_1
   Bastion_Ansible_SG = module.vpc.Bastion_Ansible_SG
   keypair_name       = module.vpc.keypair_name
@@ -133,9 +133,9 @@ module "Bastion" {
 
 module "env_lb" {
   source        = "./module/env_lb"
-  vpc_name      = module.vpc.vpc_id
+  vpc_name      = module.vpc.vpc_name
   vpc_SG_ids    = [module.vpc.Docker_SG]
-  subnet_id     = [module.vpc.pub_sub_1, module.vpc.prvt_sub_1]
+  subnet_id     = [module.vpc.pub_sub_1, module.vpc.pub_sub_2]
   cert_arn      = module.route53.cert_arn
   stage_lb_name = "${var.project_name}_${var.env}_docker_lb"
   Prod_lb_name  = "${var.project_name}_${var.env1}_docker_lb"
@@ -153,7 +153,7 @@ module "autoscaling" {
   stage_asg_name        = "${var.project_name}_${var.env1}_asg"
   stage_asg_policy_type = "${var.project_name}_${var.env1}_asg_policy"
   stage_lt_name         = "${var.project_name}_${var.env1}_launch_template"
-  prod_tg_arn           = [module.env_lb.prod_tg_arn]
+  prod_tg_arn           = [module.env_lb.Prod_tg_arn]
   prod_asg_name         = "${var.project_name}_${var.env1}_asg"
   prod_asg_policy_type  = "${var.project_name}_${var.env1}_asg_policy"
   prod_lt_name          = "${var.project_name}_${var.env1}_launch_template"

@@ -138,7 +138,7 @@ resource "aws_security_group" "Bastion_Ansible_SG" {
   description = "Allow inbound SSH traffic"
   vpc_id      = aws_vpc.project_vpc.id
 
-  ingress = {
+  ingress {
     description = "ssh port"
     from_port   = 22
     to_port     = 22
@@ -160,7 +160,7 @@ resource "aws_security_group" "Nexsu_SG" {
   description = "Allow inbound SSH traffic"
   vpc_id      = aws_vpc.project_vpc.id
 
-  ingress = {
+  ingress {
     description = "http proxy 1 port"
     from_port   = 8081
     to_port     = 8081
@@ -243,7 +243,7 @@ resource "aws_security_group" "Jenkins_SG" {
   description = "Allow inbound traffic"
   vpc_id      = aws_vpc.project_vpc.id
 
-  ingress = {
+  ingress {
     description = "http proxy port"
     from_port   = 8080
     to_port     = 8080
@@ -281,7 +281,7 @@ resource "aws_security_group" "Sonarqube_SG" {
   description = "Allow inbound traffic"
   vpc_id      = aws_vpc.project_vpc.id
 
-  ingress = {
+  ingress {
     description = "Sonarqube port"
     from_port   = 9000
     to_port     = 9000
@@ -312,7 +312,7 @@ resource "aws_security_group" "RDS_SG" {
   description = "Allow inbound traffic"
   vpc_id      = aws_vpc.project_vpc.id
 
-  ingress = {
+  ingress  {
     description = "mysql port"
     from_port   = 3306
     to_port     = 3306
@@ -332,7 +332,7 @@ resource "aws_security_group" "RDS_SG" {
 
 # TLS RSA Public & Private key Resource
 resource "tls_private_key" "tlskey" {
-  algorithm = "RAS"
+  algorithm = "RSA"
   rsa_bits  = "4096"
 }
 

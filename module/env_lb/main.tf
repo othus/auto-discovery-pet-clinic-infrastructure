@@ -1,6 +1,6 @@
 # Create Target group for stage load balancer
 resource "aws_lb_target_group" "target_group" {
-  name     = "Stage_target_group_name"
+  name     = "Stage-target-group"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = var.vpc_name
@@ -38,7 +38,7 @@ resource "aws_lb" "stage_LB" {
 
 # Create Target group for Production load balancer
 resource "aws_lb_target_group" "prod_lb_target_group" {
-  name     = "prod_target_group_name"
+  name     = "prod-target-group"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = var.vpc_name
