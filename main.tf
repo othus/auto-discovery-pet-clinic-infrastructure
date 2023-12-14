@@ -133,3 +133,34 @@ module "Bastion" {
   bastion_name = "${var.project_name}_bastion"
 }
 
+module "env_lb" {
+  source = "./module/env_lb"
+  vpc_name = module.vpc.vpc_id
+  vpc_SG_ids = [module.vpc.Docker_SG]
+  subnet_id = [module.vpc.pub_sub_1, module.vpc.prvt_sub_1]
+  cert_arn = module.route53.cert_arn
+  stage_lb_name = "${var.project_name}_${var.env}_docker_lb"
+  Prod_lb_name = "${var.project_name}_${var.env1}_docker_lb"
+
+}
+
+module "autoscaling" {
+  source = "./module/autoscaling"
+  ami_id = var.ami_redhat
+  instance_type = var.instance_type2
+  key_name = module.vpc.keypair_name
+  lt_sg = [module.vpc.Docker_SG]
+  vpc_zone_identifier = [module.vpc.prvt_sub_1, module.vpc.prvt_sub_2]
+  stage_tg_arn = [module.env_lb.stage_tg_arn]
+  stage_asg_name = "${var.project_name}_${var.env1}_asg"
+  stage_asg_policy_type = "${var.project_name}_${var.env1}_asg_policy"
+  stage_lt_name = "${var.project_name}_${var.env1}_launch_template"
+  prod_tg_arn = [module.env_lb.prod_tg_arn]
+  prod_asg_name = "${var.project_name}_${var.env1}_asg"
+  prod_asg_policy_type = "${var.project_name}_${var.env1}_asg_policy"
+  prod_lt_name = "${var.project_name}_${var.env1}_launch_template"
+  nexus_ip = module.nexus.nexus_ip
+  newrelic_license_key = var.newrelic_license_key
+  acct_id = var.acct_id
+}
+

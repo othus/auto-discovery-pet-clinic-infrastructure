@@ -17,18 +17,10 @@ variable "instance_type2" {}
 variable "project_name" {}
 variable "newrelic_license_key" {}
 variable "acct_id" {}
-variable "domain_name" {
-  
-}
-variable "domain_name2" {
-  
-}
-variable "domain_name3" {
-  
-}
-variable "domain_name4" {
-  
-}
-variable "ami_ubuntu" {
-  
-}
+variable "domain_name" {}
+variable "domain_name2" {}
+variable "domain_name3" {}
+variable "domain_name4" {}
+variable "ami_ubuntu" {}
+variable "env" {}
+variable "env1" {}
