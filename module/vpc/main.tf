@@ -333,7 +333,7 @@ resource "aws_security_group" "RDS_SG" {
 # TLS RSA Public & Private key Resource
 resource "tls_private_key" "tlskey" {
   algorithm = "RSA"
-  rsa_bits  = "4096"
+  rsa_bits  = 4096
 }
 
 # Local Private key File of the TLS key Resource
