@@ -4,10 +4,29 @@ provider "aws" {
   region  = var.aws-region
 }
 
-# Creating Keypair Resource
-resource "aws_key_pair" "vault-keypair" {
-  key_name   = "vault-keypair"
-  public_key = file(var.path-to-key-file)
+# # Creating Keypair Resource
+# resource "aws_key_pair" "vault-keypair" {
+#   key_name   = "vault-keypair"
+#   public_key = file(var.path-to-key-file)
+# }
+
+# TLS RSA Public & Private key Resource
+resource "tls_private_key" "vault_tlskey" {
+  algorithm = "RSA"
+  rsa_bits  = "4096"
+}
+
+# Local Private key File of the TLS key Resource
+resource "local_file" "sshkey" {
+  content         = tls_private_key.vault_tlskey.private_key_pem
+  file_permission = "600"
+  filename        = "vault_tlskey.pem"
+}
+
+# AWS Keypair Resource
+resource "aws_key_pair" "Vault-keypair" {
+  key_name   = var.vault-key
+  public_key = tls_private_key.vault_tlskey.public_key_openssh
 }
 
 #Creating security Group for the Vault Server
@@ -48,7 +67,7 @@ resource "aws_security_group" "vault-SG" {
   }
 
   egress {
-    description = "egres ports (all ports opened)"
+    description = "ssh ports"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -66,14 +85,14 @@ resource "aws_instance" "vault-server" {
   ami                         = var.vault-ami
   instance_type               = var.instance_type
   vpc_security_group_ids      = [aws_security_group.vault-SG.id]
-  key_name                    = aws_key_pair.vault-keypair.key_name
+  key_name                    = aws_key_pair.Vault-keypair.key_name
   iam_instance_profile        = aws_iam_instance_profile.vault-kms-unseal.id
   associate_public_ip_address = true
   user_data = templatefile("./vault_script.sh", {
     var1 = var.aws-region,
-    var2 = var.vault-kms-key
+    var2 = aws_kms_key.vault.id,
     var3 = var.domain-name,
-    var4 = var.email
+    var4 = var.email,
   })
 
   tags = {
@@ -81,23 +100,23 @@ resource "aws_instance" "vault-server" {
   }
 }
 
-resource "aws_kms_key" "vault-kms-key" {
+resource "aws_kms_key" "vault" {
   description             = "vault unseal kms key"
-  deletion_window_in_days = 10
+  deletion_window_in_days = 7
   tags = {
     "Name" = "vault-kms-unseal-key"
   }
 }
 
-# data "aws_route53_zone" "vault-rout53-zone" {
-#   name         = var.domain-name
-#   private_zone = false
-# }
+data "aws_route53_zone" "vault-rout53-zone" {
+  name         = var.domain-name
+  private_zone = false
+}
 
-# resource "aws_route53_record" "vault-rout53-record" {
-#   zone_id = data.aws_route53_zone.vault-rout53-zone.id
-#   name    = var.domain-name
-#   type    = "A"
-#   records = [aws_instance.vault-server.public_ip]
-#   ttl     = 300
-# }
+resource "aws_route53_record" "vault-rout53-record" {
+  zone_id = data.aws_route53_zone.vault-rout53-zone.id
+  name    = var.domain-name
+  type    = "A"
+  records = [aws_instance.vault-server.public_ip]
+  ttl     = 300
+}
