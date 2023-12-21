@@ -16,8 +16,8 @@ resource "aws_instance" "jenkins_server" {
 # Creating Jenkins load balancer
 resource "aws_elb" "jenkins_lb" {
   name                        = var.elb_name
-  subnets                     = var.subnet_id2
-  security_groups             = var.elb_sg
+  subnets                     = [var.subnet_id2]
+  security_groups             = [var.elb_sg]
   instances                   = [var.elb_instance]
   cross_zone_load_balancing   = false
   idle_timeout                = 400

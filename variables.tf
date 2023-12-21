@@ -1,7 +1,7 @@
 variable "profilename" {}
 variable "region" {}
-variable "vault_domain" {}
-variable "token" {}
+variable "domain" {}
+# variable "token" {}
 variable "projectname" {}
 variable "identifier" {}
 variable "vpc_cidr" {}
@@ -24,3 +24,5 @@ variable "domain_name4" {}
 variable "ami_ubuntu" {}
 variable "env" {}
 variable "env1" {}
+variable "rds_username" {}
+variable "rds_pwd" {}

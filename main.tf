@@ -29,27 +29,27 @@ module "vpc" {
   keypair_name = "${var.projectname}_keypair"
 }
 
-# Route53
-module "route53" {
-  source          = "./module/route53"
-  domain_name     = var.domain_name
-  domain_name2    = var.domain_name2
-  domain_name3    = var.domain_name3
-  domain_name4    = var.domain_name4
-  stage_dns_name  = module.env_lb.stage_lb_dns
-  stage_zone_id   = module.env_lb.stage_zone_id
-  prod_dns_name2 = module.env_lb.Prod_lb_dns
-  prod_zone_id2  = module.env_lb.Prod_zone_id
-}
+# # Route53
+# module "route53" {
+#   source          = "./module/route53"
+#   domain_name     = var.domain_name
+#   domain_name2    = var.domain_name2
+#   domain_name3    = var.domain_name3
+#   domain_name4    = var.domain_name4
+#   stage_dns_name  = module.env_lb.stage_lb_dns
+#   stage_zone_id   = module.env_lb.stage_zone_id
+#   prod_dns_name2 = module.env_lb.Prod_lb_dns
+#   prod_zone_id2  = module.env_lb.Prod_zone_id
+# }
 
 
 
 # configure the data source to retrieve the database
 # username and password from vault
 
-data "vault_generic_secret" "my_db_secret" {
-  path = "secret/database"
-}
+# data "vault_generic_secret" "my_db_secret" {
+#   path = "secret/database"
+# }
 
 module "rds" {
   source     = "./module/rds"
@@ -58,25 +58,25 @@ module "rds" {
   identifier = var.identifier
   subnet_ids = [module.vpc.prvt_sub_1, module.vpc.prvt_sub_2]
   RDS_SG     = module.vpc.RDS_SG
-  username   = data.vault_generic_secret.my_db_secret.data["username"]
-  password   = data.vault_generic_secret.my_db_secret.data["password"]
+  username   = var.rds_username #data.vault_generic_secret.my_db_secret.data["username"]
+  password   = var.rds_pwd      #data.vault_generic_secret.my_db_secret.data["password"]
 }
 
 module "Jenkins" {
   source               = "./module/jenkins"
   redhat_ami           = var.ami_redhat
   instance_type2       = var.instance_type2
-  jenkins_SG_id        = [module.vpc.Jenkins_SG]
+  jenkins_SG_id        = module.vpc.Jenkins_SG
   subnet_id            = module.vpc.prvt_sub_1
   keypair_name         = module.vpc.keypair_name
   nexus_ip             = module.nexus.nexus_ip
   jenkins_name         = "${var.project_name}_jenkins"
   newrelic_license_key = var.newrelic_license_key
   acct_id              = var.acct_id
-  subnet_id2           = [module.vpc.pub_sub_1]
+  subnet_id2           = module.vpc.pub_sub_1
   elb_instance         = module.Jenkins.instance
   elb_name             = "${var.project_name}-jenkins-lb"
-  elb_sg               = [module.vpc.Jenkins_SG]
+  elb_sg               = module.vpc.Jenkins_SG
 }
 
 module "sonarqube" {
@@ -106,16 +106,16 @@ module "nexus" {
 module "ansible" {
   source                   = "./module/ansible"
   ami_redhat               = var.ami_redhat
-  ansible_name             = "${var.project_name}_ansible_server"
+  ansible_name             = "${var.projectname}_ansible_server"
   keypair                  = module.vpc.keypair
   keypair_name             = module.vpc.keypair_name
   subnet_id                = module.vpc.pub_sub_1
   ansible_SG               = module.vpc.Bastion_Ansible_SG
   nexus_ip                 = module.nexus.nexus_ip
   staging_discovery_script = "${path.root}/module/ansible/stage-env-bash-script.sh"
-  staging_playbook         = "${path.root}/module/ansible/stage-env-playbook.ynl"
+  staging_playbook         = "${path.root}/module/ansible/stage-env-playbook.yml"
   prod_discovery_script    = "${path.root}/module/ansible/prod-env-bash-script.sh"
-  prod_playbook            = "${path.root}/module/ansible/prod-env-playbook.ynl"
+  prod_playbook            = "${path.root}/module/ansible/prod-env-playbook.yml"
   newrelic_license_key     = var.newrelic_license_key
   acct_id                  = var.acct_id
 }
@@ -136,9 +136,9 @@ module "env_lb" {
   vpc_name      = module.vpc.vpc_name
   vpc_SG_ids    = [module.vpc.Docker_SG]
   subnet_id     = [module.vpc.pub_sub_1, module.vpc.pub_sub_2]
-  cert_arn      = module.route53.cert_arn
-  stage_lb_name = "${var.project_name}_${var.env}_docker_lb"
-  Prod_lb_name  = "${var.project_name}_${var.env1}_docker_lb"
+  # cert_arn      = module.route53.cert_arn
+  stage-lb-name = "${var.project_name}-${var.env}-docker-lb"
+  Prod-lb-name  = "${var.project_name}-${var.env1}-docker-lb"
 
 }
 

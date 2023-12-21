@@ -56,7 +56,7 @@ resource "aws_subnet" "prvt_sub_2" {
 
 # Creating Internet Gateway resource
 resource "aws_internet_gateway" "IGW" {
-  vpc_id = aws_vpc.project_vpc
+  vpc_id = aws_vpc.project_vpc.id
   tags = {
     Name = var.IGW
   }
@@ -65,8 +65,8 @@ resource "aws_internet_gateway" "IGW" {
 # Creating NAT Gateway resource
 # Creating NAT Gateway association with Public subnet 1 resource
 resource "aws_nat_gateway" "NAT" {
-  allocation_id = aws_eip.nat_eip
-  subnet_id     = aws_subnet.pub_sub_1
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.pub_sub_1.id
   tags = {
     "Name" = var.NAT
   }

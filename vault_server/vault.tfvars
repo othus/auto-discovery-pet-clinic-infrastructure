@@ -8,7 +8,7 @@ vault-ami = "ami-0fc5d935ebf8bc3bc"
 
 instance_type = "t2.medium"
 
-domain-name = "raro.us.to"
+domain-name = "raro.com.ng"
 
 email = "raroetobro@gmail.com"
 

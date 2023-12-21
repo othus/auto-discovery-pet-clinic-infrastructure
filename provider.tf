@@ -3,8 +3,8 @@ provider "aws" {
   region  = var.region
 }
 
-# Vault provider
-provider "vault" {
-  address = "https://${var.vault_domain}"
-  token   = var.token
-}
+# # Vault provider
+# provider "vault" {
+#   address = "https://${var.domain}"
+#   token   = var.token
+# }

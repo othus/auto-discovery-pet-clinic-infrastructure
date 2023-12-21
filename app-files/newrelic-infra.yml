@@ -1,0 +1,6 @@
+enable_process_metrics: true
+status_server_enabled: true
+status_server_port: 18003
+license_key: 8ca71e8d9712d9f32a29912375af2aecFFFFNRAL
+custom_attributes:
+  nr_deployed_by: myapp

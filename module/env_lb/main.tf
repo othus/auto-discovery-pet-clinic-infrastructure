@@ -25,14 +25,14 @@ resource "aws_lb_listener" "LB_listener" {
 
 # Create stage load balancer
 resource "aws_lb" "stage_LB" {
-  name                       = var.stage_lb_name
+  name                       = var.stage-lb-name
   internal                   = false
   load_balancer_type         = "application"
   security_groups            = var.vpc_SG_ids
   subnets                    = var.subnet_id
   enable_deletion_protection = false
   tags = {
-    Name = var.stage_lb_name
+    Name = var.stage-lb-name
   }
 }
 
@@ -50,18 +50,18 @@ resource "aws_lb_target_group" "prod_lb_target_group" {
   }
 }
 
-# Create Production load balancer listener
-resource "aws_lb_listener" "prod_LB_listener" {
-  load_balancer_arn = aws_lb.Prod_LB.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.cert_arn
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.prod_lb_target_group.arn
-  }
-}
+# # Create Production load balancer listener
+# resource "aws_lb_listener" "prod_LB_listener" {
+#   load_balancer_arn = aws_lb.Prod_LB.arn
+#   port              = "443"
+#   protocol          = "HTTPS"
+#   ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   certificate_arn   = var.cert_arn
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.prod_lb_target_group.arn
+#   }
+# }
 
 # Create Production load balancer listener 2
 resource "aws_lb_listener" "prod_LB_listener2" {
@@ -76,13 +76,13 @@ resource "aws_lb_listener" "prod_LB_listener2" {
 
 # Create Production load balancer
 resource "aws_lb" "Prod_LB" {
-  name                       = var.Prod_lb_name
+  name                       = var.Prod-lb-name
   internal                   = false
   load_balancer_type         = "application"
   security_groups            = var.vpc_SG_ids
   subnets                    = var.subnet_id
   enable_deletion_protection = false
   tags = {
-    Name = var.Prod_lb_name
+    Name = var.Prod-lb-name
   }
 }

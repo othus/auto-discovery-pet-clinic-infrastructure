@@ -31,10 +31,10 @@ sudo systemctl daemon-reload
 sudo systemctl start consul
 sudo systemctl enable consul
 sudo apt update
-sudo apt-get install software-properties-common
-sudo add-apt-repository universe
-sudo apt-get install -y certbot
-sudo certbot certonly --standalone -d "${var3}" --email "${var4}" --agree-tos --non-interactive
+# sudo apt-get install software-properties-common
+# sudo add-apt-repository universe
+# sudo apt-get install -y certbot
+# sudo certbot certonly --standalone -d "${var3}" --email "${var4}" --agree-tos --non-interactive
 sudo wget https://releases.hashicorp.com/vault/1.5.0/vault_1.5.0_linux_amd64.zip
 sudo unzip vault_1.5.0_linux_amd64.zip
 sudo mv vault /usr/bin/
@@ -72,11 +72,8 @@ WantedBy=multi-user.target
 EOT
 
 sudo systemctl daemon-reload
-export VAULT_ADDR="https://${var3}:443"
-cat << EOT > /etc/profile.d/vault.sh
-export VAULT_ADDR="https://${var3}:443"
-export VAULT_SKIP_VERIFY=true
-EOT
+
+
 vault -autocomplete-install
 complete -C /usr/bin/vault vault
 sudo systemctl start vault
