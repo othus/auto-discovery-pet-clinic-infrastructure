@@ -36,6 +36,8 @@ Restart=on-abort
 [Install]
 WantedBy=multi-user.target
 EOT
+# Grant permissions to the Nexus service in SELinux
+sudo chcon -t bin_t /app/nexus/bin/nexus
 
 sudo ln -s app/nexus/bin/nexus /etc/init.d/nexus
 sudo chkconfig --add nexus
