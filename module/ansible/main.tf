@@ -1,6 +1,6 @@
 # Create EC" Instance for Ansible node
 resource "aws_instance" "ansible_server" {
-  ami                         = var.ami_redhat
+  ami                         = var.ami_redhat2
   instance_type               = "t2.micro"
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [var.ansible_SG]

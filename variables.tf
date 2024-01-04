@@ -13,6 +13,7 @@ variable "all_cidr" {}
 variable "az_1" {}
 variable "az_2" {}
 variable "ami_redhat" {}
+variable "ami_redhat2" {}
 variable "instance_type2" {}
 variable "project_name" {}
 variable "newrelic_license_key" {}

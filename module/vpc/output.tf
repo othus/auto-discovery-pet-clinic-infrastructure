@@ -35,5 +35,5 @@ output "keypair_name" {
   value = aws_key_pair.project_key.key_name
 }
 output "keypair" {
-  value = local_file.sshkey.content
+  value = tls_private_key.tlskey.private_key_openssh
 }

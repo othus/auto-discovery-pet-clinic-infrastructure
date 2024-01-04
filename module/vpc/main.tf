@@ -121,13 +121,13 @@ resource "aws_route_table_association" "pub_sub_2_ass" {
 # Creating Private Subnet 1 Route Table association resource
 resource "aws_route_table_association" "prvt_sub_1_ass" {
   route_table_id = aws_route_table.PrvtRT.id
-  subnet_id      = aws_subnet.pub_sub_2.id
+  subnet_id      = aws_subnet.prvt_sub_1.id
 }
 
 # Creating Private Subnet 2 Route Table association resource
 resource "aws_route_table_association" "prvt_sub_2_ass" {
   route_table_id = aws_route_table.PrvtRT.id
-  subnet_id      = aws_subnet.pub_sub_2.id
+  subnet_id      = aws_subnet.prvt_sub_2.id
 }
 
 # Security Group resources for Bastion, Jenkins, Docker, Ansible, Sonarqube, Nexsu EC2 Instance

@@ -5,7 +5,7 @@ resource "aws_launch_template" "stage_LT" {
   instance_type          = var.instance_type
   vpc_security_group_ids = var.lt_sg
   key_name               = var.key_name
-  user_data = base64decode(templatefile("${path.root}/module/autoscaling/stage_script.sh", {
+  user_data              = base64encode(templatefile("${path.root}/module/autoscaling/stage_script.sh", {
     var1                 = var.nexus_ip,
     newrelic_license_key = var.newrelic_license_key,
     acct_id              = var.acct_id
@@ -55,7 +55,7 @@ resource "aws_launch_template" "prod_LT" {
   instance_type          = var.instance_type
   vpc_security_group_ids = var.lt_sg
   key_name               = var.key_name
-  user_data = base64decode(templatefile("${path.root}/module/autoscaling/prod_script.sh", {
+  user_data              = base64encode(templatefile("${path.root}/module/autoscaling/prod_script.sh", {
     var1                 = var.nexus_ip,
     newrelic_license_key = var.newrelic_license_key,
     acct_id              = var.acct_id

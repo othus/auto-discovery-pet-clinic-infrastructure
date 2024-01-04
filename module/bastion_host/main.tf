@@ -1,5 +1,5 @@
 resource "aws_instance" "bastion" {
-  ami                         = var.ami_redhat
+  ami                         = var.ami_redhat2
   instance_type               = var.instance_type
   vpc_security_group_ids      = [var.Bastion_Ansible_SG]
   subnet_id                   = var.pub_sub_1

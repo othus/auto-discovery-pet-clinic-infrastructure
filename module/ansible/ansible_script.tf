@@ -27,7 +27,7 @@ sudo echo "${file(var.staging_playbook)}" >> /etc/ansible/stage-env-playbook.yml
 sudo echo "${file(var.prod_playbook)}" >> /etc/ansible/prod-env-playbook.yml
 sudo echo "${file(var.staging_discovery_script)}" >> /etc/ansible/stage-env-bash-script.yml
 sudo echo "${file(var.prod_discovery_script)}" >> /etc/ansible/prod-env-bash-script.yml
-sudo echo "${file(var.keypair)}" >> /etc/ansible/key.pem
+sudo echo "${var.keypair}" >> /etc/ansible/tlskey.pem
 sudo bash -c 'echo "NEXUS_IP: ${var.nexus_ip}:8085" > /etc/ansible/ansible_vars_file.yml'
 sudo chown -R ec2-user:ec2-user /etc/ansible
 sudo chmod 400 /etc/ansible/key.pem

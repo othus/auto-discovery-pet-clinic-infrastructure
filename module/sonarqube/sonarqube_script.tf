@@ -11,53 +11,64 @@ ulimit -u 4096" >> /etc/sysctl.conf'
 
 sudo bash -c 'echo "
 sonarqube - nofile 65536
-sonarqube - nproc 4098" >> /etc/security/limits.conf
+sonarqube - nproc 4098" >> /etc/security/limits.conf'
 
-sudo apt install -y unzip openjdk-11-jdk
+sudo apt install openjdk-11-jdk -y
 
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ lsb_release -cs-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
 sudo apt-get update
 sudo apt-get -y upgrade
 sudo apt-get -y install postgresql-12 postgresql-contrib-12
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
-sudo chpasswd <<<"postgres:Admin123@
+sudo chpasswd <<<"postgres:Admin123"
 sudo su -c 'createuser sonar' postgres
-sudo su -c "psql -c \"ALTER USER sonar WITH ENCRYPTED PASSWORD 'Admin123@'\"" postgres
+sudo su -c "psql -c \"ALTER USER sonar WITH ENCRYPTED PASSWORD 'Admin123'\"" postgres
 sudo su -c "psql -c \"CREATE DATABASE sonarqube OWNER sonar\"" postgres
 sudo su -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar\"" postgres
 sudo systemctl restart postgresql
 
-sudo mkdir /sonarqube/
-sudo cd /sonarqube/
+# sudo mkdir /sonarqube/
+# sudo cd /sonarqube/
 sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.6.0.39681.zip
+sudo apt install unzip -y
 sudo unzip sonarqube-8.6.0.39681.zip -d /opt/
 sudo mv /opt/sonarqube-8.6.0.39681 /opt/sonarqube
 sudo groupadd sonar
-sudo useradd -c "SonarQube -User" -d /opt/sonarqube/ -g sonar sonar
+sudo useradd -c "SonarQube - User" -d /opt/sonarqube/ -g sonar sonar
 sudo chown sonar:sonar /opt/sonarqube/ -R
+sudo chmod -R 755 /opt/sonarqube
 sudo bash -c 'echo "
 sonar.jdbc.username=sonar
-sonar.jdbc.password=Admin123@
+sonar.jdbc.password=Admin123
 sonar,jbdc.url=jbdc:postgresql://localhost/sonarqube
+sonar.web.javaAdditionalOpts=-server
 sonar.search.javOpts=-Xmx512 -Xms512 -XX:+HeapDumpOnOutOfMemoryError" >> /opt/sonarqube/conf/sonar.properties'
+ 
 sudo touch /etc/systemd/system/sonarqube.service
 sudo bash -c 'echo "
 [Unit]
-Desription=SonarQube service
+Description=SonarQube service
 After=syslog.target network.target
-[service]
+
+[Service]
 Type=forking
-ExecStart=/opt/sonarqube/bin/linux-x84-64/sonar.sh start
-ExecStop=/opt/sonarqube/bin/linux-x84-64/sonar.sh stop
+
+ExecStartPre=/bin/sleep 30
+ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
+ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+ExecReload=/opt/sonarqube/bin/linux-x86-64/sonar.sh restart
+
 User=sonar
 Group=sonar
 Restart=always
 LimitNOFILE=65536
 LimitNPROC=4096
+
 [Install]
 WantedBy=multi-user.target" >> /etc/systemd/system/sonarqube.service'
+
 sudo systemctl daemon-reload
 sudo systemctl enable sonarqube.service
 sudo systemctl start sonarqube.service
@@ -65,23 +76,28 @@ sudo systemctl start sonarqube.service
 sudo apt install net-tools -y
 sudo apt-get install nginx -y
 sudo touch /etc/nginx/sites-enabled/sonarqube.conf
+
 sudo bash -c 'echo "
 server{
-    listen 80;
-    access_log /var/log/nginx/sonar.access.log;
-    error_log /var/log/nginx/sonar.error.log;
-    proxy_buffer 16 64k;
+    listen      80;
+
+    access_log  /var/log/nginx/sonar.access.log;
+    error_log   /var/log/nginx/sonar.error.log;
+
+    proxy_buffers 16 64k;
     proxy_buffer_size 128k;
+
     location / {
-        proxy_pass http://127.0.0.1:9000;
-        proxy__next_upstreamerror timeout invalid_header Http_500 Http_502 Http_503 Http_504;
+        proxy_pass  http://127.0.0.1:9000;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
         proxy_redirect off;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forworded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forworded-Proto http;
+
+        proxy_set_header    Host            $host;
+        proxy_set_header    X-Real-IP       $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto http;
     }
-}" >> /etc/nginx/sites-enabled/sonarqube.conf
+}" >> /etc/nginx/sites-enabled/sonarqube.conf'
 
 sudo rm //etc/nginx/sites-enabled/default
 sudo systemctl enable nginx.service

@@ -1,4 +1,4 @@
-variable "ami_redhat" {}
+variable "ami_redhat2" {}
 variable "subnet_id" {}
 variable "ansible_SG" {}
 variable "keypair_name" {}
